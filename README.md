@@ -1,11 +1,11 @@
 # Internship Coding Challenge, Application Team
-## Background: The Application Team and Your Role
+## Background
 
-The Application team is responsible for the full-stack development of Intus Care's core product offerings. This team is tasked with building and maintaining user interfaces, developing robust APIs, integrating with databases, managing server-side logic, and more. Developers on the Application team, as a result, are interdisciplinary by nature and work across a variety of tasks, encompassing both frontend and backend development.
+The Application team is responsible for the full-stack development of Intus Care's core product offerings. This team is tasked with building and maintaining user interfaces, developing robust APIs, integrating with databases, managing server-side logic, and more. Developers on the Application team are, as a result, interdisciplinary by nature and work across a variety of tasks, encompassing both frontend and backend development.
 
 As an intern, you will be integrated into the Application team as a full-fledged developer, no different from any other engineer on the team. You will be engaged in the team's sprints following the Agile framework, carry a balance of work similar to other developers, and participate in refinement and technical planning meetings, among other responsibilities.
 
-The Application team's current focus is on developing CareHub, a flagship new EHR for PACE programs. The tech stack used consists of `TypeScript`, `React`, `Next.js`, `Material-UI`, and `MongoDB`. Familiarity with `Zod`, `Zustand`, `Playwright`, and `tRPC` APIs may be helpful as well.
+The Application team's current focus is on developing CareHub, a flagship workflow tool for PACE programs. The tech stack used consists of `TypeScript`, `React`, `Next.js`, `Material-UI`, and `MongoDB`. Familiarity with `tRPC` APIs, `Zod`, `Zustand`, and `Playwright` may be helpful as well.
 
 ## Challenge Specification: Basic Participant List Feature
 ### User Story:
