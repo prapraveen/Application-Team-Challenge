@@ -54,6 +54,6 @@ We have provided the styling specifications (hexcode, drop shadow, border radius
 
 ### Submission
 
-Fork this repository and submit a pull request here when you are done with the challenge.
+Fork this repository and reply to the challenge email with a link to your fork when you have completed it.
 
 Good luck!
