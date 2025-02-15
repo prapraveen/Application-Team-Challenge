@@ -1,0 +1,45 @@
+:root {
+    /* Grayscale Palette */
+    --grayscale-white: #FFFFFF;
+    --grayscale-offWhite: #E5E5E5;
+    --grayscale-inputBack: #F1F2F3;
+    --grayscale-labels: #97999B;
+    --grayscale-body: #626275;
+    --grayscale-black: #000000;
+    --grayscale-black50: rgba(#000000, 0.5);
+
+    /* Primary Palette */
+    --primary-IntusBlue: #4D7EF8;
+    --primary-IntusBlue50: rgba(#4D7EF8, 0.5);
+    --primary-IntusNavy: #062D8F;
+}
+
+h2 {
+    font-weight: bold;
+    font-size: 28;
+    font-family: Mulish, Arial, Helvetica, sans-serif;
+  }
+  
+h3 {
+    font-weight: bold;
+    font-size: 20;
+    font-family: Mulish, Arial, Helvetica, sans-serif;
+}
+
+body {
+    font-weight: normal;
+    font-size: 20;
+    font-family: Mulish, Arial, Helvetica, sans-serif;
+}
+  
+.card {
+    box-shadow: 0px 0.4px 0.4rem 0.06rem var(--grayscale-black50);
+    border: none;
+    border-radius: 10px;
+}
+
+.card:hover {
+    box-shadow: 0 0.4px 0.4rem 0.06rem var(--grayscale-black50);
+    border: 2px solid var(--primary-IntusBlue50);
+    border-radius: 10px;
+}
