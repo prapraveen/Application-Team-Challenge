@@ -10,13 +10,52 @@
 
     /* Primary Palette */
     --primary-IntusBlue: #4D7EF8;
-    --primary-IntusBlue50: rgba(#4D7EF8, 0.5);
+    --primary-IntusBlue50: rgba(77, 126, 248, 0.5);
     --primary-IntusNavy: #062D8F;
+}
+
+.grayscale-white {
+    color: var(--grayscale-white);
+}
+
+.grayscale-offWhite {
+    color: var(--grayscale-offWhite);
+}
+
+.grayscale-inputBack {
+    color: var(--grayscale-inputBack);
+}
+
+.grayscale-labels {
+    color: var(--grayscale-labels);
+}
+
+.grayscale-body {
+    color: var(--grayscale-body);
+}
+
+.grayscale-black {
+    color: var(--grayscale-black);
+}
+
+.grayscale-black50 {
+    color: var(--grayscale-black50);
+}
+
+.primary-IntusBlue {
+    color: var(--primary-IntusBlue);
+}
+
+.primary-IntusBlue50 {
+    color: var(--primary-IntusBlue50);
+}
+
+.primary-IntusNavy {
+    color: var(--primary-IntusNavy);
 }
 
 body {
     background: var(--grayscale-offWhite);
-
 }
 
 h2 {
@@ -43,9 +82,9 @@ body {
     border-radius: 10px;
 }
 
-.card:hover {
+.ppt-list-item:hover {
     box-shadow: 0 0.4px 0.4rem 0.06rem var(--grayscale-black50);
-    border: 2px solid var(--primary-IntusBlue50);
+    outline: 2px solid var(--primary-IntusBlue50);
     border-radius: 10px;
 }
 

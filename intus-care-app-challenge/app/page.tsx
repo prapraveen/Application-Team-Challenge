@@ -3,13 +3,13 @@
 import FocusView from './components/focus';
 import Header from './components/header';
 import PptList from './components/list';
-import axios from 'axios';
 
 import { useState, useEffect } from 'react'
 
 export default function Home() {
-  const [pptData, setPptData] = useState<Participant[]|null>(null);
+  const [pptListData, setPptListData] = useState<Participant[]|null>(null);
   const [pptSelected, setPptSelected] = useState<Participant|null>(null);
+  const [pptSelectedIdx, setPptSelectedIdx] = useState<number|null>(null);
   const [loadingData, setLoadingData] = useState<boolean>(true);
 
   // fetch data
@@ -21,7 +21,7 @@ export default function Home() {
           throw new Error("Network response was not ok");
         }
         const res = await response.json();
-        setPptData(res);
+        setPptListData(res);
         console.log(res);
       }
       catch (error) {
@@ -38,7 +38,15 @@ export default function Home() {
   return (
     <>
       <Header />
-      {(pptSelected) ? <FocusView ppt={pptSelected}/> : <PptList pptData={pptData}/>}
+      {(pptSelected) ? 
+        <FocusView ppt={pptSelected} 
+          setPptSelected={setPptSelected} 
+          pptSelectedIdx={pptSelectedIdx} 
+          setPptSelectedIdx={setPptSelectedIdx} 
+          pptListData={pptListData} 
+          setPptListData={setPptListData}/> 
+        : 
+        <PptList pptListData={pptListData} setPptSelected={setPptSelected} setPptSelectedIdx={setPptSelectedIdx}/>}
 
     </>
   );

@@ -11,4 +11,5 @@ declare interface Participant {
 declare interface Diagnosis {
     icdCode: string;
     timestamp: string;
+    name?: string;
 }
