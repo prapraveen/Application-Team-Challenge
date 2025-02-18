@@ -1,6 +1,7 @@
 import '../app.css'
 import Image from 'next/image'
 import PptListItem from './ppt-list-item';
+import PptListItemSkeleton from './ppt-list-item-skeleton';
 
 type pptListProps = {
     pptListData: Participant[]|null;
@@ -12,9 +13,7 @@ const PptList = ({ pptListData, setPptSelected, setPptSelectedIdx }: pptListProp
 
     return <>
         <div>
-            <h2 
-                className="mt-8 ml-16 primary-IntusNavy"
-                >
+            <h2 className="mt-8 ml-16 primary-IntusNavy">
                 Participants
             </h2>
             <div className="card bg-white mx-24 my-2 hide-scrollbar" style={{maxHeight: '75vh', overflow: 'scroll'}}>
@@ -29,12 +28,16 @@ const PptList = ({ pptListData, setPptSelected, setPptSelectedIdx }: pptListProp
 
                 </div>
                 <hr className='mb-5 mx-8 grayscale-labels' />
-                <ul> 
-                    {pptListData?.map((ppt, idx) => (
+                <ul>
+                    {(pptListData) ? pptListData?.map((ppt, idx) => (
                         <li key={idx} className='mx-8 mb-5'>
                             <PptListItem ppt={ppt} setPptSelected={setPptSelected} setPptSelectedIdx={setPptSelectedIdx} idx={idx}/>
                         </li>
-                    ))}
+                    ))
+                    :
+                    Array(10).fill(<PptListItemSkeleton />).map((skeleton, idx) => 
+                        <li key={idx} className='mx-8 mb-5'>{skeleton}</li>
+                    )}
                 </ul>
 
             </div>

@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import Button from "@mui/material/Button"
 import { styled } from "@mui/material/styles";
-import FocusListItem from "../focus-list-item";
+import FocusListItem from "./focus-list-item";
+import FocusListItemSkeleton from "./focus-list-item-skeleton";
 
 type focusViewProps = {
     ppt: Participant;
@@ -18,7 +19,8 @@ const BackButton = styled(Button)({
 })
 
 const FocusView = ({ ppt, setPptSelected, pptSelectedIdx, setPptSelectedIdx, pptListData, setPptListData}: focusViewProps) => {
-    
+    const [loading, setLoading] = useState(true);
+
     const fetchDiagnosisName = async (diagnosis: Diagnosis) => {
         const url = `https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=${diagnosis.icdCode}`;
         try {
@@ -36,27 +38,44 @@ const FocusView = ({ ppt, setPptSelected, pptSelectedIdx, setPptSelectedIdx, ppt
             }
         }
         catch (error) {
-            console.error(`Error fetching data for ICD code ${diagnosis.icdCode}:`, error);
-            return diagnosis;
+            throw Error(`Error fetching data for ICD code ${diagnosis.icdCode}: ${error}`);
         }
     }
 
     const fetchDiagnosesNames = async (ppt: Participant) => {
-        const diagnosesWithNamesPromises = ppt.diagnoses.map(
-            (diagnosis: Diagnosis) => fetchDiagnosisName(diagnosis)
-        );
-        const diagnosesWithNames = await Promise.all(diagnosesWithNamesPromises);
-        const updatedPpt = Object.assign({}, ppt, {diagnoses: diagnosesWithNames});
-        setPptSelected(updatedPpt);
+        try {
+            const diagnosesWithNamesPromises = ppt.diagnoses.map(
+                (diagnosis: Diagnosis) => fetchDiagnosisName(diagnosis)
+            );
+            const diagnosesWithNames = await Promise.all(diagnosesWithNamesPromises);
+            const updatedPpt = Object.assign({}, ppt, {diagnoses: diagnosesWithNames, diagnosesCached: true});
+            setPptSelected(updatedPpt);
+    
+            // cache the results in pptListData
+            let updatedPptListData = pptListData!.slice();
+            updatedPptListData[pptSelectedIdx!] = updatedPpt;
+            setPptListData(updatedPptListData);
+        }
+        catch (error) {
+            throw Error("Could not fetch data for one or more ICD codes.");
+        }
+        
 
-        // cache the results in pptListData
-        let updatedPptListData = pptListData!.slice();
-        updatedPptListData[pptSelectedIdx!] = updatedPpt;
-        setPptListData(updatedPptListData);
     }
 
     useEffect(() => {
-        fetchDiagnosesNames(ppt);
+        const getDiagnosesData = async () => {
+            if (ppt.diagnosesCached == false) {
+                await fetchDiagnosesNames(ppt);
+            }
+            setLoading(false)
+        }
+        try {
+            getDiagnosesData();
+        }
+        catch {
+            setLoading(true);
+        }
     }, [])
     
     
@@ -78,11 +97,15 @@ const FocusView = ({ ppt, setPptSelected, pptSelectedIdx, setPptSelectedIdx, ppt
             <hr className="mb-4 grayscale-labels" />
             <p className="grayscale-labels mb-4">{`ICD Codes (${ppt.diagnoses.length})`}</p>
             <ul>
-                {ppt.diagnoses.map((diagnosis: Diagnosis, idx: number) => (
-                    <li className="pb-6 mx-5" key={idx}>
-                        <FocusListItem diagnosis={diagnosis} />
-                    </li>
-                ))}
+                {(!loading) ? 
+                    ppt.diagnoses.map((diagnosis: Diagnosis, idx: number) => (
+                        <li className="pb-6 mx-5" key={idx}>
+                            <FocusListItem diagnosis={diagnosis} />
+                        </li>))
+                    :
+                    Array(10).fill(<FocusListItemSkeleton />).map((item, idx) => (
+                        <li className="pb-6 mx-5" key={idx}>{item}</li>
+                    ))}
             </ul>
         </div>
         

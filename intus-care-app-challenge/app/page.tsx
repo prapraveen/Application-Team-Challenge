@@ -1,5 +1,6 @@
 "use client"
 
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import FocusView from './components/focus';
 import Header from './components/header';
 import PptList from './components/list';
@@ -21,6 +22,10 @@ export default function Home() {
           throw new Error("Network response was not ok");
         }
         const res = await response.json();
+        for (let i = 0; i < res.length; i++) {
+          res[i]["id"] = i;
+          res[i]["diagnosesCached"] = false;
+        }
         setPptListData(res);
         console.log(res);
       }
@@ -37,17 +42,18 @@ export default function Home() {
 
   return (
     <>
-      <Header />
-      {(pptSelected) ? 
-        <FocusView ppt={pptSelected} 
-          setPptSelected={setPptSelected} 
-          pptSelectedIdx={pptSelectedIdx} 
-          setPptSelectedIdx={setPptSelectedIdx} 
-          pptListData={pptListData} 
-          setPptListData={setPptListData}/> 
-        : 
-        <PptList pptListData={pptListData} setPptSelected={setPptSelected} setPptSelectedIdx={setPptSelectedIdx}/>}
-
+      <SkeletonTheme baseColor='#d2d2d2' highlightColor='#dddddd' duration={0.75}>
+        <Header />
+        {(pptSelected) ? 
+          <FocusView ppt={pptSelected} 
+            setPptSelected={setPptSelected} 
+            pptSelectedIdx={pptSelectedIdx} 
+            setPptSelectedIdx={setPptSelectedIdx} 
+            pptListData={pptListData} 
+            setPptListData={setPptListData}/> 
+          : 
+          <PptList pptListData={pptListData} setPptSelected={setPptSelected} setPptSelectedIdx={setPptSelectedIdx}/>}
+      </SkeletonTheme>
     </>
   );
 }

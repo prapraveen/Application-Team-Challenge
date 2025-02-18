@@ -19,4 +19,4 @@ const PptListItem = ({ ppt, setPptSelected, setPptSelectedIdx, idx }: pptListIte
     </>
 }
 
-export default PptListItem
+export default PptListItem; 

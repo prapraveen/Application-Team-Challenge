@@ -6,6 +6,7 @@ declare interface Participant {
     phoneNumber: number;
     patientNotes: string;
     diagnoses: Diagnosis[];
+    id: number;
 }
 
 declare interface Diagnosis {
