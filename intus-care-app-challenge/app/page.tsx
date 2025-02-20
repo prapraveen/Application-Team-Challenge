@@ -1,36 +1,38 @@
 "use client"
 
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import FocusView from './components/focus';
-import Header from './components/header';
-import PptList from './components/list';
-
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from "react"
+import { SkeletonTheme } from "react-loading-skeleton";
+import FocusView from "./components/focus";
+import Header from "./components/header";
+import PptList from "./components/list";
+import History from "./components/history";
+import { pptArrayAPIResSchema } from "./components/schemas/schemas";
+import "./app.css";
 
 export default function Home() {
   const [pptListData, setPptListData] = useState<Participant[]|null>(null);
   const [pptSelected, setPptSelected] = useState<Participant|null>(null);
-  const [pptSelectedIdx, setPptSelectedIdx] = useState<number|null>(null);
-  const [loadingData, setLoadingData] = useState<boolean>(true);
+  const [loadingData, setLoadingData] = useState(true);
+  const [pptHistory, setPptHistory] = useState<Participant[]>([]);
 
-  // fetch data
+  // fetch dat
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:9000/participants');
+        const response = await fetch("http://localhost:9000/participants");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        const res = await response.json();
-        for (let i = 0; i < res.length; i++) {
-          res[i]["id"] = i;
-          res[i]["diagnosesCached"] = false;
+        const data = await response.json();
+        pptArrayAPIResSchema.parse(data);
+        for (let i = 0; i < data.length; i++) {
+          data[i]["id"] = i;
+          data[i]["diagnosesCached"] = false;
         }
-        setPptListData(res);
-        console.log(res);
+        setPptListData(data);
       }
       catch (error) {
-        console.log(error);
+        throw new Error(`Error getting participant data: ${error}`);
       }
       finally {
         setLoadingData(false);
@@ -42,17 +44,17 @@ export default function Home() {
 
   return (
     <>
-      <SkeletonTheme baseColor='#d2d2d2' highlightColor='#dddddd' duration={0.75}>
+      <SkeletonTheme baseColor="#d2d2d2" highlightColor="#dddddd" duration={0.75}>
         <Header />
-        {(pptSelected) ? 
+        {(pptSelected) ? (
           <FocusView ppt={pptSelected} 
-            setPptSelected={setPptSelected} 
-            pptSelectedIdx={pptSelectedIdx} 
-            setPptSelectedIdx={setPptSelectedIdx} 
+            setPptSelected={setPptSelected}
             pptListData={pptListData} 
             setPptListData={setPptListData}/> 
-          : 
-          <PptList pptListData={pptListData} setPptSelected={setPptSelected} setPptSelectedIdx={setPptSelectedIdx}/>}
+        ) : ( 
+          <PptList pptListData={pptListData} setPptListData={setPptListData} setPptSelected={setPptSelected} pptHistory={pptHistory} setPptHistory={setPptHistory}/>
+        )}
+            <History pptHistory={pptHistory} setPptHistory={setPptHistory} setPptSelected={setPptSelected}/>
       </SkeletonTheme>
     </>
   );

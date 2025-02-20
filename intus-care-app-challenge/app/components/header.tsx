@@ -1,6 +1,3 @@
-import Image from 'next/image'
-import '../app.css'
-
 const Header = () => {
     const headerStyles = {
         backgroundColor: "var(--grayscale-white)", 
@@ -9,11 +6,7 @@ const Header = () => {
 
     return <>
         <div className="p-5" style={headerStyles}>
-            <Image 
-                src={'/logo_IntusCare.png'} 
-                alt="Intus Care Logo"
-                width={339}
-                height={65} />
+            <img src={'../images/logo_IntusCare.svg'} alt="Intus Care Logo" />
         </div>
     </>
 }

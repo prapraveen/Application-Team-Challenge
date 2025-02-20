@@ -1,14 +1,28 @@
 type pptListItemProps = {
     ppt: Participant;
     setPptSelected: React.Dispatch<React.SetStateAction<Participant|null>>;
-    setPptSelectedIdx: React.Dispatch<React.SetStateAction<number|null>>;
-    idx: number;
+    pptHistory: Participant[];
+    setPptHistory: React.Dispatch<React.SetStateAction<Participant[]>>;
 }
 
-const PptListItem = ({ ppt, setPptSelected, setPptSelectedIdx, idx }: pptListItemProps) => {
+const PptListItem = ({ ppt, setPptSelected, pptHistory, setPptHistory }: pptListItemProps) => {
     const selectPpt = () => {
+        /* update history */
+        // get index of ppt in array
+        let pptIdx = -1;
+        for (let i = 0; i < pptHistory.length; i++) {
+            if (pptHistory[i].id == ppt.id) {
+                pptIdx = i;
+                break;
+            }
+        }
+        if (pptIdx != -1) {
+            pptHistory.splice(pptIdx, 1);
+        }
+        let updatedPptHistory = pptHistory.slice();
+        updatedPptHistory.unshift(ppt);
+        setPptHistory(updatedPptHistory);
         setPptSelected(ppt);
-        setPptSelectedIdx(idx)
     }
 
     return <>
@@ -19,4 +33,4 @@ const PptListItem = ({ ppt, setPptSelected, setPptSelectedIdx, idx }: pptListIte
     </>
 }
 
-export default PptListItem; 
+export default PptListItem;
