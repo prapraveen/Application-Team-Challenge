@@ -49,7 +49,6 @@ export default function Home() {
         {(pptSelected) ? (
           <FocusView ppt={pptSelected} 
             setPptSelected={setPptSelected}
-            pptListData={pptListData} 
           /> 
         ) : ( 
           <PptList pptListData={pptListData} setPptListData={setPptListData} setPptSelected={setPptSelected} pptHistory={pptHistory} setPptHistory={setPptHistory}/>

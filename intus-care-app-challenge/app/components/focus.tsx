@@ -10,7 +10,6 @@ import { ICDCodeAPIResponeSchema } from "./schemas/schemas";
 type focusViewProps = {
     ppt: Participant;
     setPptSelected: React.Dispatch<React.SetStateAction<Participant|null>>;
-    pptListData: Participant[]|null;
 }
 
 const BackButton = styled(Button)({
@@ -18,7 +17,7 @@ const BackButton = styled(Button)({
     backgroundColor: "var(--primary-IntusBlue)"
 })
 
-const FocusView = ({ ppt, setPptSelected, pptListData }: focusViewProps) => {
+const FocusView = ({ ppt, setPptSelected }: focusViewProps) => {
     const [loading, setLoading] = useState(true);
     const [showPptInfo, setShowPptInfo] = useState(false);
     const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
@@ -26,17 +25,15 @@ const FocusView = ({ ppt, setPptSelected, pptListData }: focusViewProps) => {
     const fetchDiagnosisName = async (diagnosis: Diagnosis) => {
         const icdCode = diagnosis.icdCode;
         const cachedData = localStorage.getItem(icdCode);
+        // if ICD code is cached in local storage, fetch it from there
         if (cachedData) {
-            console.log("cached");
             const parsedData = JSON.parse(cachedData);
-            if (Date.now() <= parseInt(parsedData["expiration"], 10)) {
+            if (Date.now() <= parseInt(parsedData["expiration"], 10)) { // only use data if not expired
                 const diagnosisName = parsedData["name"];
                 const updatedDiagnosis = Object.assign({}, diagnosis, {name: diagnosisName})
                 return updatedDiagnosis;
             }
         }
-        
-        console.log("fetching");
 
         const url = `https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=${icdCode}`;
         try {
@@ -53,11 +50,11 @@ const FocusView = ({ ppt, setPptSelected, pptListData }: focusViewProps) => {
                 diagnosisName = null;
             }
             const expiryMinutes = 30;
-                const expiryTimestamp = Date.now() + expiryMinutes * 60 * 1000; // 30 minutes
-                const cachedData = {name: diagnosisName, expiration: expiryTimestamp};
-                localStorage.setItem(icdCode, JSON.stringify(cachedData));
-                const updatedDiagnosis = Object.assign({}, diagnosis, {name: diagnosisName})
-                return updatedDiagnosis;
+            const expiryTimestamp = Date.now() + expiryMinutes * 60 * 1000; // 30 minutes expiration time
+            const cachedData = {name: diagnosisName, expiration: expiryTimestamp};
+            localStorage.setItem(icdCode, JSON.stringify(cachedData));
+            const updatedDiagnosis = Object.assign({}, diagnosis, {name: diagnosisName})
+            return updatedDiagnosis;
         }
         catch (error) {
             throw Error(`Error fetching data for ICD code ${diagnosis.icdCode}: ${error}`);
@@ -70,25 +67,8 @@ const FocusView = ({ ppt, setPptSelected, pptListData }: focusViewProps) => {
                 (diagnosis: Diagnosis) => fetchDiagnosisName(diagnosis)
             );
             const diagnosesWithNames = await Promise.all(diagnosesWithNamesPromises);
-            const updatedFields = {diagnoses: diagnosesWithNames, diagnosesCached: true};
-            // const updatedPpt = Object.assign({}, ppt, updatedFields);
-            // setPptSelected(updatedPpt);
             setDiagnoses(diagnosesWithNames);
 
-            // get ppt index in the list
-            /*
-            let pptIdx = -1;
-            for (let i = 0; i < pptListData!.length; i++) {
-                if (pptListData![i].id == ppt.id) {
-                    pptIdx = i;
-                    break;
-                }
-            }
-            // cache the results in pptListData
-            let updatedPptListData = pptListData!.slice();
-            updatedPptListData[pptIdx] = updatedPpt;
-            setPptListData(updatedPptListData);
-            */
         } catch (error) {
             throw Error(`Error fetching data for one or more ICD codes: ${error}`);
         }
