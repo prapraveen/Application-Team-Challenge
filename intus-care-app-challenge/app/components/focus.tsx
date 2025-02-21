@@ -11,7 +11,6 @@ type focusViewProps = {
     ppt: Participant;
     setPptSelected: React.Dispatch<React.SetStateAction<Participant|null>>;
     pptListData: Participant[]|null;
-    setPptListData: React.Dispatch<React.SetStateAction<Participant[]|null>>;
 }
 
 const BackButton = styled(Button)({
@@ -19,27 +18,46 @@ const BackButton = styled(Button)({
     backgroundColor: "var(--primary-IntusBlue)"
 })
 
-const FocusView = ({ ppt, setPptSelected, pptListData, setPptListData}: focusViewProps) => {
+const FocusView = ({ ppt, setPptSelected, pptListData }: focusViewProps) => {
     const [loading, setLoading] = useState(true);
     const [showPptInfo, setShowPptInfo] = useState(false);
+    const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
     const fetchDiagnosisName = async (diagnosis: Diagnosis) => {
-        const url = `https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=${diagnosis.icdCode}`;
+        const icdCode = diagnosis.icdCode;
+        const cachedData = localStorage.getItem(icdCode);
+        if (cachedData) {
+            console.log("cached");
+            const parsedData = JSON.parse(cachedData);
+            if (Date.now() <= parseInt(parsedData["expiration"], 10)) {
+                const diagnosisName = parsedData["name"];
+                const updatedDiagnosis = Object.assign({}, diagnosis, {name: diagnosisName})
+                return updatedDiagnosis;
+            }
+        }
+        
+        console.log("fetching");
+
+        const url = `https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?terms=${icdCode}`;
         try {
             const response = await fetch(url);
             const data = await response.json();
             ICDCodeAPIResponeSchema.parse([ ...data, undefined]);
 
             const displayStrings = data[3]; // index of display string
+            let diagnosisName;
             if (displayStrings && displayStrings.length > 0) {
-                const diagnosisName = displayStrings[0][1]; // index of first item found, then diagnosis name
-                let diagnosisWithName = { ... diagnosis };
-                diagnosisWithName["name"] = diagnosisName;
-                return diagnosisWithName; 
+                diagnosisName = displayStrings[0][1]; // index of first item found, then diagnosis name
             }
             else {
-                return diagnosis;
+                diagnosisName = null;
             }
+            const expiryMinutes = 30;
+                const expiryTimestamp = Date.now() + expiryMinutes * 60 * 1000; // 30 minutes
+                const cachedData = {name: diagnosisName, expiration: expiryTimestamp};
+                localStorage.setItem(icdCode, JSON.stringify(cachedData));
+                const updatedDiagnosis = Object.assign({}, diagnosis, {name: diagnosisName})
+                return updatedDiagnosis;
         }
         catch (error) {
             throw Error(`Error fetching data for ICD code ${diagnosis.icdCode}: ${error}`);
@@ -53,10 +71,12 @@ const FocusView = ({ ppt, setPptSelected, pptListData, setPptListData}: focusVie
             );
             const diagnosesWithNames = await Promise.all(diagnosesWithNamesPromises);
             const updatedFields = {diagnoses: diagnosesWithNames, diagnosesCached: true};
-            const updatedPpt = Object.assign({}, ppt, updatedFields);
-            setPptSelected(updatedPpt);
+            // const updatedPpt = Object.assign({}, ppt, updatedFields);
+            // setPptSelected(updatedPpt);
+            setDiagnoses(diagnosesWithNames);
 
             // get ppt index in the list
+            /*
             let pptIdx = -1;
             for (let i = 0; i < pptListData!.length; i++) {
                 if (pptListData![i].id == ppt.id) {
@@ -68,6 +88,7 @@ const FocusView = ({ ppt, setPptSelected, pptListData, setPptListData}: focusVie
             let updatedPptListData = pptListData!.slice();
             updatedPptListData[pptIdx] = updatedPpt;
             setPptListData(updatedPptListData);
+            */
         } catch (error) {
             throw Error(`Error fetching data for one or more ICD codes: ${error}`);
         }
@@ -76,9 +97,7 @@ const FocusView = ({ ppt, setPptSelected, pptListData, setPptListData}: focusVie
     useEffect(() => {
         setLoading(true);
         const getDiagnosesData = async () => {
-            if (ppt.diagnosesCached == false) {
-                await fetchDiagnosesNames(ppt);
-            }
+            await fetchDiagnosesNames(ppt);
             setLoading(false)
         }
         try {
@@ -86,6 +105,7 @@ const FocusView = ({ ppt, setPptSelected, pptListData, setPptListData}: focusVie
         } catch {
             setLoading(true);
         }
+        console.log(diagnoses);
     }, [ppt])
     
     
@@ -133,7 +153,7 @@ const FocusView = ({ ppt, setPptSelected, pptListData, setPptListData}: focusVie
             <p className="grayscale-labels mb-4">{`ICD Codes (${ppt.diagnoses.length})`}</p>
             <ul>
                 {(!loading) ? (
-                    ppt.diagnoses.map((diagnosis: Diagnosis, idx: number) => (
+                    diagnoses.map((diagnosis: Diagnosis, idx: number) => (
                         <li className="pb-6 mx-5" key={idx}>
                             <FocusListItem diagnosis={diagnosis} />
                         </li>))
