@@ -1,6 +1,9 @@
+import Header from "./components/header";
+import History from "./components/history";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SkeletonTheme } from "react-loading-skeleton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <SkeletonTheme baseColor="#d2d2d2" highlightColor="#dddddd" duration={0.75}>
+          {children}
+        </SkeletonTheme>
       </body>
     </html>
   );

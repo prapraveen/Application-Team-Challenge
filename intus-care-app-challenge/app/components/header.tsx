@@ -6,7 +6,9 @@ const Header = () => {
 
     return <>
         <div className="p-5" style={headerStyles}>
-            <img src={'../images/logo_IntusCare.svg'} alt="Intus Care Logo" />
+            <a href="/">
+                <img src={'../images/logo_IntusCare.svg'} alt="Intus Care Logo" />
+            </a>
         </div>
     </>
 }

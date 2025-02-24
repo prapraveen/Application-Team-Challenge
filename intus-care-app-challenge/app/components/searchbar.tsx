@@ -3,16 +3,16 @@ import { TextField, IconButton, InputAdornment, Box } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 type SearchbarProps = {
-    pptListData: Participant[]|null;
     resetOrder: () => void;
     searchFilter: (arg0: string) => void;
     placeholder: string;
 }
 
-const Searchbar = ({ pptListData, resetOrder, searchFilter, placeholder }: SearchbarProps) => {
+const Searchbar = ({ resetOrder, searchFilter, placeholder }: SearchbarProps) => {
     const [pptSearchTerm, setPptSearchTerm] = useState("");
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>) => {
+        // if user deletes search term, reset the order
         if (e.target.value == "") {
             resetOrder();
         }
@@ -20,11 +20,11 @@ const Searchbar = ({ pptListData, resetOrder, searchFilter, placeholder }: Searc
     }
 
     const handleSearchKeydown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        // if user presses enter on a non-empty search, perform the search
         if (event.key === "Enter" && pptSearchTerm != "") {
             searchFilter(pptSearchTerm);
         }
     }
-
 
     return (
         <Box display="flex" alignItems="center">

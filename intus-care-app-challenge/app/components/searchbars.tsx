@@ -1,5 +1,5 @@
 import Searchbar from "./searchbar"
-import { ICDCodeAPIResponeSchema } from "./schemas/schemas";
+import { ICDCodeAPIResponeSchema } from "../schemas/schemas";
 
 type SearchbarsProps = {
     pptListData: Participant[]|null;
@@ -8,6 +8,7 @@ type SearchbarsProps = {
 }
 
 const Searchbars = ({ pptListData, resetOrder, setPptDisplayOrder}: SearchbarsProps) => {
+    // filter by name (not case sensitive)
     const nameSearch = (term: string) => {
         setPptDisplayOrder(pptListData!.filter((ppt) => {
             const name = `${ppt.firstName} ${ppt.lastName}`;
@@ -15,6 +16,7 @@ const Searchbars = ({ pptListData, resetOrder, setPptDisplayOrder}: SearchbarsPr
         }))
     }
 
+    // filter participants with an ICD code
     const icdCodeSearch = (term: string) => (
         setPptDisplayOrder(pptListData!.filter((ppt) => (
             ppt.diagnoses.some((diagnosis) => (
@@ -23,6 +25,7 @@ const Searchbars = ({ pptListData, resetOrder, setPptDisplayOrder}: SearchbarsPr
         )))
     )
 
+    // filter participants by diagnosis name
     const diagnosisSearch = async (term: string) => {
         const fetchICDCodes = async () => {
             const url = `https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name&terms=${term.toLowerCase()}&maxList=500`;
@@ -39,31 +42,29 @@ const Searchbars = ({ pptListData, resetOrder, setPptDisplayOrder}: SearchbarsPr
                 throw Error(`Error fetching ICD Codes for diagnosis: ${error}`);
             }
         }
+        // get ICD codes associated with the diagnosis name, and convert to a set for faster indexing
         const icdCodesArray = await fetchICDCodes();
         const icdCodesSet = new Set(icdCodesArray);
 
         setPptDisplayOrder(pptListData!.filter((ppt) => {
             const pptICDCodes = ppt.diagnoses.map((diagnosis) => diagnosis.icdCode);
-            return pptICDCodes.some((code) => icdCodesSet.has(code));
+            return pptICDCodes.some((code) => icdCodesSet.has(code)); // get participants that have at least 1 matching ICD code
         }));
     }
 
     return (
         <div className="searchbars flex flex-row justify-between pt-5 pl-8 w-3/5">
             <Searchbar 
-                pptListData={pptListData} 
                 resetOrder={resetOrder} 
                 searchFilter={nameSearch}
                 placeholder={"Search Names..."}
             />
             <Searchbar 
-                pptListData={pptListData} 
                 resetOrder={resetOrder} 
                 searchFilter={icdCodeSearch}
                 placeholder={"Search ICD Codes..."}
             />
             <Searchbar 
-                pptListData={pptListData} 
                 resetOrder={resetOrder} 
                 searchFilter={diagnosisSearch}
                 placeholder={"Search Diagnoses..."}

@@ -1,41 +1,50 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import PptListItem from "./ppt-list-item";
-import NameSearchBar from "./searchbar";
 import PptListItemSkeleton from "./ppt-list-item-skeleton";
-import { ICDCodeAPIResponeSchema } from "./schemas/schemas";
-import "../app.css";
 import Searchbars from "./searchbars";
+import useParticipantStore from "../stores/useParticipantStore";
 
-type pptListProps = {
-    pptListData: Participant[]|null;
-    setPptListData: React.Dispatch<React.SetStateAction<Participant[]|null>>;
-    setPptSelected: React.Dispatch<React.SetStateAction<Participant|null>>;
-    pptHistory: Participant[];
-    setPptHistory: React.Dispatch<React.SetStateAction<Participant[]>>;
-}
-
-const PptList = ({ pptListData, setPptSelected, pptHistory, setPptHistory }: pptListProps) => {
+const PptList = () => {
+    const { pptListData, fetchParticipants } = useParticipantStore();
+    const [loading, setLoading ] = useState(true);
     const [orderCodesAsc, setOrderCodesAsc] = useState(false);
     const [orderNamesAsc, setOrderNamesAsc] = useState(false);
     const [pptDisplayOrder, setPptDisplayOrder] = useState<Participant[]>([]);
 
+    // load participant data
     useEffect(() => {
-        // sort descending by default
+        setLoading(true);
+        fetchParticipants();
+    }, [])
+
+    // set loading to false once data is loaded in
+    useEffect(() => {
         if (pptListData) {
-            let sortedPptList = pptListData.slice();
-            sortedPptList.sort((pptA, pptB) => 
-                (pptA.diagnoses.length - pptB.diagnoses.length) * ((!orderCodesAsc ? -1 : 1))
-            )
-            setPptDisplayOrder(sortedPptList);
-        }
+            setLoading(false);
+          }
     }, [pptListData])
+
+    useEffect(() => {
+        // default order: number of ICD codes, descending
+        if (!loading) {
+          if (pptListData) {
+              let sortedPptList = pptListData.slice();
+              sortedPptList.sort((pptA, pptB) => 
+                  (pptA.diagnoses.length - pptB.diagnoses.length) * ((!orderCodesAsc ? -1 : 1)) // reverse if false
+              )
+              setPptDisplayOrder(sortedPptList);
+          }
+        }
+    }, [loading])
 
     /* functions to order ppt */
     const orderByCodes = () => {
         setOrderCodesAsc(!orderCodesAsc);
         let newPptDisplayOrder = pptDisplayOrder.slice();
         newPptDisplayOrder.sort((pptA, pptB) => 
-            (pptA.diagnoses.length - pptB.diagnoses.length) * ((orderCodesAsc ? -1 : 1))
+            (pptA.diagnoses.length - pptB.diagnoses.length) * ((orderCodesAsc ? -1 : 1)) // reverse if false
         )
         setPptDisplayOrder(newPptDisplayOrder);
     }
@@ -47,7 +56,7 @@ const PptList = ({ pptListData, setPptSelected, pptHistory, setPptHistory }: ppt
             const nameA = `${pptA.firstName} ${pptA.lastName}`;
             const nameB = `${pptB.firstName} ${pptB.lastName}`;
             const comparison = nameA.localeCompare(nameB, "en", {});
-            return comparison * ((!orderNamesAsc) ? 1 : -1);
+            return comparison * ((!orderNamesAsc) ? 1 : -1); // reverse if false
         })
         setPptDisplayOrder(newPptDisplayOrder);
     }
@@ -59,7 +68,7 @@ const PptList = ({ pptListData, setPptSelected, pptHistory, setPptHistory }: ppt
         if (pptListData) {
             let sortedPptList = pptListData.slice();
             sortedPptList.sort((pptA, pptB) => 
-                (pptA.diagnoses.length - pptB.diagnoses.length) * ((!orderCodesAsc ? -1 : 1))
+                (pptA.diagnoses.length - pptB.diagnoses.length) * ((!orderCodesAsc ? -1 : 1)) // reverse if false
             )
             setPptDisplayOrder(sortedPptList);
         }
@@ -67,13 +76,18 @@ const PptList = ({ pptListData, setPptSelected, pptHistory, setPptHistory }: ppt
 
     return (
         <>
+            
             <h2 className="mt-8 ml-16 primary-IntusNavy">
                 Participants
             </h2>
-            <div className="card bg-white mx-24 my-2 hide-scrollbar" style={{maxHeight: "75vh", overflow: "scroll"}}>
-                <Searchbars pptListData={pptListData} resetOrder={resetOrder} setPptDisplayOrder={setPptDisplayOrder} />
-                <div className="tableLabels flex flex-row justify-between pt-5 mb-3 ">
-                    <div className="ppt-name flex flex-row px-8">
+            <div className="card bg-white mx-24 my-3 hide-scrollbar" style={{maxHeight: "75vh", overflow: "scroll"}}>
+                <Searchbars 
+                    pptListData={pptListData} 
+                    resetOrder={resetOrder} 
+                    setPptDisplayOrder={setPptDisplayOrder} 
+                />
+                <div className="flex flex-row justify-between pt-5 mb-3 ">
+                    <div className="flex flex-row px-8">
                         <p className="grayscale-labels mr-3">Participant Name</p>
                         <button onClick={orderByNames}>
                             <img 
@@ -82,7 +96,7 @@ const PptList = ({ pptListData, setPptSelected, pptHistory, setPptHistory }: ppt
                             />
                         </button>
                     </div>
-                    <div className="icd-codes flex flex-row pr-80">
+                    <div className="flex flex-row pr-80">
                         <p className="mx-3 grayscale-labels">ICD Codes</p>
                         <button onClick={orderByCodes}>
                             <img 
@@ -95,19 +109,14 @@ const PptList = ({ pptListData, setPptSelected, pptHistory, setPptHistory }: ppt
                 </div>
                 <hr className="mb-5 mx-8 grayscale-labels" />
                 <ul>
-                    {(pptListData) ? (
+                    {(!loading) ? (
                         pptDisplayOrder.map((ppt, idx) => (
                             <li key={idx} className="mx-8 mb-5">
-                                <PptListItem 
-                                    ppt={ppt} 
-                                    setPptSelected={setPptSelected} 
-                                    pptHistory={pptHistory} 
-                                    setPptHistory={setPptHistory}
-                                />
+                                <PptListItem ppt={ppt} />
                             </li>
                         ))
                         ) : (
-                        Array(10).fill(<PptListItemSkeleton />).map((skeleton, idx) => 
+                        Array(10).fill(<PptListItemSkeleton />).map((skeleton, idx) => // skeleton loader 
                             <li key={idx} className="mx-8 mb-5">{skeleton}</li>
                         )
                     )}
