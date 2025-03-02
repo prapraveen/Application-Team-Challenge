@@ -1,0 +1,25 @@
+{
+  "name": "application-team-challenge",
+  "version": "1.0.0",
+  "description": "The Application team is responsible for the full-stack development of Intus Care's core product offerings. This team is tasked with building and maintaining user interfaces, developing robust APIs, integrating with databases, managing server-side logic, and more. Developers on the Application team are, as a result, interdisciplinary by nature and work across a variety of tasks, encompassing both frontend and backend development.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./api/index.js",
+    "postinstall": "cd api && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prapraveen/Application-Team-Challenge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prapraveen/Application-Team-Challenge/issues"
+  },
+  "homepage": "https://github.com/prapraveen/Application-Team-Challenge#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.50.1",
+    "@types/node": "^22.13.8"
+  }
+}
