@@ -1,5 +1,4 @@
 import { useRouter } from "next/navigation";
-import useParticipantStore from "../stores/useParticipantStore";
 
 type pptListItemProps = {
     ppt: Participant;

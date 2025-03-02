@@ -54,16 +54,19 @@ const Searchbars = ({ pptListData, resetOrder, setPptDisplayOrder}: SearchbarsPr
 
     const searchbarsList = [
         <Searchbar 
+            key={"name"}
             resetOrder={resetOrder} 
             searchFilter={nameSearch}
             placeholder={"Search Names..."}
         />,
         <Searchbar 
+            key={"ICD codes"}
             resetOrder={resetOrder} 
             searchFilter={icdCodeSearch}
             placeholder={"Search ICD Codes..."}
         />,
         <Searchbar 
+            key={"diagnosis"}
             resetOrder={resetOrder} 
             searchFilter={diagnosisSearch}
             placeholder={"Search Diagnoses..."}
