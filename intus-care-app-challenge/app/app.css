@@ -60,19 +60,19 @@ body {
 
 h2 {
     font-weight: bold;
-    font-size: 28;
+    font-size: 28px;
     font-family: Mulish, Arial, Helvetica, sans-serif;
   }
   
 h3 {
     font-weight: bold;
-    font-size: 20;
+    font-size: 20px;
     font-family: Mulish, Arial, Helvetica, sans-serif;
 }
 
 body {
     font-weight: normal;
-    font-size: 20;
+    font-size: 20px;
     font-family: Mulish, Arial, Helvetica, sans-serif;
 }
   

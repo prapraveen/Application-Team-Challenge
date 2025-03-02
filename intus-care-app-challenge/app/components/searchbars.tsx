@@ -52,23 +52,29 @@ const Searchbars = ({ pptListData, resetOrder, setPptDisplayOrder}: SearchbarsPr
         }));
     }
 
+    const searchbarsList = [
+        <Searchbar 
+            resetOrder={resetOrder} 
+            searchFilter={nameSearch}
+            placeholder={"Search Names..."}
+        />,
+        <Searchbar 
+            resetOrder={resetOrder} 
+            searchFilter={icdCodeSearch}
+            placeholder={"Search ICD Codes..."}
+        />,
+        <Searchbar 
+            resetOrder={resetOrder} 
+            searchFilter={diagnosisSearch}
+            placeholder={"Search Diagnoses..."}
+        />
+    ]
+
     return (
-        <div className="searchbars flex flex-row justify-between pt-5 pl-8 w-3/5">
-            <Searchbar 
-                resetOrder={resetOrder} 
-                searchFilter={nameSearch}
-                placeholder={"Search Names..."}
-            />
-            <Searchbar 
-                resetOrder={resetOrder} 
-                searchFilter={icdCodeSearch}
-                placeholder={"Search ICD Codes..."}
-            />
-            <Searchbar 
-                resetOrder={resetOrder} 
-                searchFilter={diagnosisSearch}
-                placeholder={"Search Diagnoses..."}
-            />
+        <div className="searchbars flex flex-row pt-5 pl-8">
+            {searchbarsList.map((searchbar, idx) => (
+                <div key={idx} className="pr-4">{searchbar}</div>
+            ))}
         </div>
     )
 }

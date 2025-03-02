@@ -121,7 +121,7 @@ const FocusView = ({ ppt }: focusViewProps) => {
                 <h2 className={`pt-8 pb-4 grayscale-body ${!ppt && "w-1/5"}`}>
                     {(ppt) ? `${ppt.firstName} ${ppt.lastName}` : <Skeleton />}
                 </h2>
-                <button onClick={displayPptInfo} className="mt-4"> {/*button to display info about participant*/}
+                <button id="display-info-button" onClick={displayPptInfo} className="mt-4"> {/*button to display info about participant*/}
                     {(showPptInfo) ? (
                         <KeyboardArrowDown sx={{fontSize: "3rem"}} />
                     ) : (

@@ -34,7 +34,7 @@ const History = () => {
                             <p className="m-2 ml-4 grayscale-labels">
                                 Viewing History
                             </p>
-                            <button className="p-2 hover:bg-gray-100 rounded-full"
+                            <button id="history-button" className="p-2 hover:bg-gray-100 rounded-full"
                                     onClick={() => setMenuToggled(!menuToggled)}>
                                 <HistoryIcon fontSize="large" />
                             </button>
@@ -43,7 +43,7 @@ const History = () => {
                         <ul className="hide-scrollbar" style={{overflow: "scroll", minHeight: "5vh", maxHeight: "40vh"}}>
                             {history.map((ppt: Participant, idx: number) => (
                                 <li className="m-3" key={idx}>
-                                    <a href={`/participant/${ppt.id}`} onClick={(e) => handleClick(e, ppt)}>
+                                    <a className="ppt-history-link" href={`/participant/${ppt.id}`} onClick={(e) => handleClick(e, ppt)}>
                                         <h3 className="primary-IntusBlue hover:underline">
                                             {`${ppt.firstName} ${ppt.lastName}`}
                                         </h3>
@@ -57,7 +57,7 @@ const History = () => {
                     </div>
                 </div>
             ) : (
-                <button className="p-2 hover:bg-gray-100 rounded-full"
+                <button id="history-button" className="p-2 hover:bg-gray-100 rounded-full"
                         onClick={() => setMenuToggled(!menuToggled)}>
                     <HistoryIcon fontSize="large"/>
                 </button>

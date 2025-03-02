@@ -30,7 +30,7 @@ const PptList = () => {
         // default order: number of ICD codes, descending
         if (!loading) {
           if (pptListData) {
-              let sortedPptList = pptListData.slice();
+              const sortedPptList = pptListData.slice();
               sortedPptList.sort((pptA, pptB) => 
                   (pptA.diagnoses.length - pptB.diagnoses.length) * ((!orderCodesAsc ? -1 : 1)) // reverse if false
               )
@@ -42,7 +42,7 @@ const PptList = () => {
     /* functions to order ppt */
     const orderByCodes = () => {
         setOrderCodesAsc(!orderCodesAsc);
-        let newPptDisplayOrder = pptDisplayOrder.slice();
+        const newPptDisplayOrder = pptDisplayOrder.slice();
         newPptDisplayOrder.sort((pptA, pptB) => 
             (pptA.diagnoses.length - pptB.diagnoses.length) * ((orderCodesAsc ? -1 : 1)) // reverse if false
         )
@@ -51,7 +51,7 @@ const PptList = () => {
 
     const orderByNames = () => {
         setOrderNamesAsc(!orderNamesAsc);
-        let newPptDisplayOrder = pptDisplayOrder.slice();
+        const newPptDisplayOrder = pptDisplayOrder.slice();
         newPptDisplayOrder.sort((pptA, pptB) => {
             const nameA = `${pptA.firstName} ${pptA.lastName}`;
             const nameB = `${pptB.firstName} ${pptB.lastName}`;
@@ -66,7 +66,7 @@ const PptList = () => {
         setOrderCodesAsc(false);
         setOrderNamesAsc(false);
         if (pptListData) {
-            let sortedPptList = pptListData.slice();
+            const sortedPptList = pptListData.slice();
             sortedPptList.sort((pptA, pptB) => 
                 (pptA.diagnoses.length - pptB.diagnoses.length) * ((!orderCodesAsc ? -1 : 1)) // reverse if false
             )
@@ -89,7 +89,7 @@ const PptList = () => {
                 <div className="flex flex-row justify-between pt-5 mb-3 ">
                     <div className="flex flex-row px-8">
                         <p className="grayscale-labels mr-3">Participant Name</p>
-                        <button onClick={orderByNames}>
+                        <button id="names-order" onClick={orderByNames}>
                             <img 
                                 src="../images/orderFilter_Up.svg" 
                                 style={(!orderNamesAsc) ? {rotate: "180deg"} : {}}
@@ -98,7 +98,7 @@ const PptList = () => {
                     </div>
                     <div className="flex flex-row pr-80">
                         <p className="mx-3 grayscale-labels">ICD Codes</p>
-                        <button onClick={orderByCodes}>
+                        <button id="codes-order" onClick={orderByCodes}>
                             <img 
                                 src="../images/orderFilter_Up.svg" 
                                 style={(!orderCodesAsc) ? {rotate: "180deg"} : {}}
