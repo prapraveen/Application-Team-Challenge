@@ -8,17 +8,14 @@ import useParticipantStore from "../stores/useParticipantStore";
 const History = () => {
     const router = useRouter();
     const [menuToggled, setMenuToggled] = useState(false);
-    const { history, addToHistory, clearHistory } = useParticipantStore();
+    const { history, clearHistory } = useParticipantStore();
 
     const handleClick = (event: React.MouseEvent, ppt: Participant) => {
         // support ctrl+click or cmd+click to open in new tab
         if (!(event.ctrlKey || event.metaKey)) {
             event.preventDefault();
-            addToHistory(ppt);
             setMenuToggled(false);
             router.push(`/participant/${ppt.id}`);
-        } else {
-            addToHistory(ppt);
         }
     }
 

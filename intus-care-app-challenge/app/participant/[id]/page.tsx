@@ -9,7 +9,7 @@ import useParticipantStore from "@/app/stores/useParticipantStore";
 import "@/app/app.css"
 
 const FocusPage = () => {
-    const { pptListData, fetchParticipants } = useParticipantStore();
+    const { pptListData, fetchParticipants, addToHistory } = useParticipantStore();
     const [pptSelected, setPptSelected] = useState<Participant|null>(null);
     
     const params = useParams();
@@ -35,6 +35,7 @@ const FocusPage = () => {
                 router.push("/");
             } else { // valid
                 setPptSelected(pptListData[parsedId]); // set participant to the one with the corresponding ID
+                addToHistory(pptListData[parsedId]); // add to history
             }
         }
     }, [pptListData, pptId, router])

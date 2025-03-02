@@ -35,7 +35,7 @@ const useParticipantStore = create<ParticipantStore>((set, get) => ({
             return;
         }
         try {
-            const response = await fetch("http://localhost:9000/participants");
+            const response = await fetch("https://infinite-coast-50520-d00a40d30a9d.herokuapp.com/participants");
             if (!response.ok) {
                 throw new Error("Network response was not ok");
             }

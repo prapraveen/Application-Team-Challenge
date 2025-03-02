@@ -7,16 +7,13 @@ type pptListItemProps = {
 
 const PptListItem = ({ ppt }: pptListItemProps) => {
     const router = useRouter();
-    const { addToHistory } = useParticipantStore();
 
     const handleClick = (event: React.MouseEvent) => {
         // support ctrl+click or cmd+click to open in new tab
         if (!(event.ctrlKey || event.metaKey)) {
             event.preventDefault();
-            addToHistory(ppt);
             router.push(`/participant/${ppt.id}`);
         } else {
-            addToHistory(ppt);
         }
     };
 
