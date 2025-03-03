@@ -1,3 +1,22 @@
+## Extra Features/Functionality
+**Hosting:** The frontend of the application is hosted at https://intuscare-coding-challenge.vercel.app/ , and the participants API is hosted at https://infinite-coast-50520-d00a40d30a9d.herokuapp.com/participants
+
+**Searchbars:** In the participant list view, there are fields to search by participant name, by ICD Code, and by diagnosis name
+
+**Participant History:** In the top right corner, there is a history icon which can be used to see which participants were most recently viewed, and to navigate to their respective focus views
+
+**Participant Info View**: In the focus view, a button next to the participants name can be clicked to view more information about them (date of birth, phone number, any notes, etc)
+
+**Caching:** API responses from the Clinical Table Search Service API are cached to prevent repetitive API requests
+
+**Routing:** The focus view uses dynamic routing for each participant
+
+**Skeleton Loaders:** Skeleton loaders are displayed while information is loading
+
+**Testing:** For this application I have built a test suite for participant list view, focus view, and history menu functionality, using Playwright
+
+In total, around 5-6 hours were spent creating the application, with an additional hour for writing tests
+
 # Internship Coding Challenge, Application Team
 ## Background
 
